@@ -6,31 +6,31 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Sword extends JavaPlugin {
 
+    private static Sword instance;
+    private CooldownManager cooldownManager;
+
     @Override
     public void onEnable() {
-        // Plugin startup logic
-        Bukkit.getLogger().info("Sword plugin has been enabled!");
+        instance = this; // Set the instance to the current plugin instance
+        cooldownManager = new CooldownManager();
 
-        // Initialize the CooldownManager
-        CooldownManager cooldownManager = new CooldownManager();
+        Bukkit.getLogger().info("Sword Plugin Enabled!");
 
-        // Create SwordListener with the cooldown manager
-        SwordListener swordListener = new SwordListener(this, cooldownManager);
-
-        // Register the SwordListener
-        getServer().getPluginManager().registerEvents(swordListener, this);
-
-        // Register individual sword classes
-        new FireSword(swordListener);
-        new waterSword(swordListener);
-        new earthSword(swordListener);
-        new SpaceSword(swordListener);
-        new AirSword(swordListener);
+        // Register sword event handlers
+        getServer().getPluginManager().registerEvents(new FireSword(cooldownManager), this);
+        getServer().getPluginManager().registerEvents(new WaterSword(cooldownManager), this);
+        getServer().getPluginManager().registerEvents(new EarthSword(cooldownManager), this);
+        getServer().getPluginManager().registerEvents(new AirSword(cooldownManager), this);
+        getServer().getPluginManager().registerEvents(new SpaceSword(cooldownManager), this);
+        getServer().getPluginManager().registerEvents(new DragonSword(cooldownManager), this);
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
-        Bukkit.getLogger().info("Sword plugin is shutting down.");
+        Bukkit.getLogger().info("Sword Plugin Disabled!");
+    }
+
+    public static Sword getInstance() {
+        return instance;
     }
 }

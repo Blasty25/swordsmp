@@ -1,5 +1,6 @@
 package Swordsmp.sword.swordtypes;
 
+import Swordsmp.sword.CooldownManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -12,7 +13,13 @@ import org.bukkit.util.Vector;
 
 import java.util.List;
 
-public class waterSword implements Listener {
+public class WaterSword implements Listener {
+    private final CooldownManager cooldownManager;
+
+    public WaterSword(CooldownManager cooldownManager) {
+        this.cooldownManager = cooldownManager;
+    }
+
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -20,34 +27,32 @@ public class waterSword implements Listener {
 
         if (item.getType() == Material.NETHERITE_SWORD && hasWaterSwordTag(item)) {
             if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                // Check cooldown
-                if (!isOnCooldown(player, "water_sword")) {
-                    // Launch opponent with water
-                    launchOpponentInWater(player);
-                    // Set cooldown
-                    setCooldown(player, "water_sword", 150); // 2 min 30 sec cooldown
-                    //Make sure to implement the cooldown manager after finishing other swords
+                if (!cooldownManager.isOnCooldown(player, "water_sword")) {
+                    launchNearbyPlayers(player); // Implement your ability
+                    cooldownManager.setCooldown(player, "water_sword", 150); // Set cooldown
                 } else {
-                    player.sendMessage("Water Sword is on cooldown!");
+                    long remainingTime = cooldownManager.getCooldownTime(player, "water_sword");
+                    player.sendMessage("Water Sword is on cooldown for " + remainingTime + " more seconds!");
                 }
             }
         }
     }
-    public void launchNearbyPlayers(Player player) {
-        // Get a list of nearby entities within a certain radius
-        double radius = 10.0; // You can adjust this radius as needed
+
+    private void launchNearbyPlayers(Player player) {
+        double radius = 5.0; // Adjust as needed
         List<Entity> nearbyEntities = player.getNearbyEntities(radius, radius, radius);
 
         for (Entity entity : nearbyEntities) {
             if (entity instanceof Player) {
                 Player nearbyPlayer = (Player) entity;
-                // Launch the nearby player 40 blocks into the air
-                nearbyPlayer.setVelocity(new Vector(0, 25, 0)); // You can adjust the Y value for more height
+                nearbyPlayer.setVelocity(new Vector(0, 1, 0).multiply(25)); // Launch upwards
                 nearbyPlayer.sendMessage("You were launched by the Water Sword!");
             }
         }
     }
 
-
-
+    private boolean hasWaterSwordTag(ItemStack item) {
+        // Logic to check for Water Sword tag
+        return true; // Replace with actual tag checking logic
+    }
 }

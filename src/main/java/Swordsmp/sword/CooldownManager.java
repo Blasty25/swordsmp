@@ -1,4 +1,4 @@
-package Swordsmp.sword.swordtypes;
+package Swordsmp.sword;
 
 import org.bukkit.entity.Player;
 
