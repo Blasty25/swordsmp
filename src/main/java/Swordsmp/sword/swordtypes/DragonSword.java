@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -58,7 +59,9 @@ public class DragonSword implements Listener {
                         launchPlayer(target);
                         // Apply extra damage
                         event.setDamage(event.getDamage() * 1.2); // 20% more damage
+                        lockTargetInPlace(target); // Lock the target in place
                     }
+
                     // Set cooldown
                     cooldownManager.setCooldown(player, "dragon_sword", 600); // 10-minute cooldown
                 } else {
@@ -72,6 +75,8 @@ public class DragonSword implements Listener {
     // This method locks the target in place and surrounds them with dragon breath
     public void lockTargetInPlace(LivingEntity target) {
         target.setVelocity(new Vector(0, 0, 0)); // Lock the target in place
+        target.sendMessage("You are locked in place!");
+
         // Surround target with dragon breath
         new BukkitRunnable() {
             int duration = 10; // 10 seconds of effect
@@ -79,6 +84,7 @@ public class DragonSword implements Listener {
             public void run() {
                 if (duration <= 0) {
                     cancel(); // Stop after 10 seconds
+                    target.sendMessage("You are free!");
                 } else {
                     // Implement logic to apply dragon breath effect here
                     target.sendMessage("You are surrounded by dragon breath!");
@@ -97,5 +103,17 @@ public class DragonSword implements Listener {
     private boolean hasDragonSwordTag(ItemStack item) {
         return item != null && item.getType() == Material.NETHERITE_SWORD && item.hasItemMeta()
                 && item.getItemMeta().hasCustomModelData() && item.getItemMeta().getCustomModelData() == 6; // Change 6 to your Dragon Sword's custom model data
+    }
+
+    // Create the Dragon Sword ItemStack
+    public ItemStack createDragonSword() {
+        ItemStack dragonSword = new ItemStack(Material.NETHERITE_SWORD);
+        ItemMeta meta = dragonSword.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName("§cDragon Sword"); // Set the display name
+            meta.setCustomModelData(6); // Set custom model data (adjust as necessary)
+            dragonSword.setItemMeta(meta);
+        }
+        return dragonSword;
     }
 }

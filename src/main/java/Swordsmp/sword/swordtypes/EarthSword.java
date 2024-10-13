@@ -9,10 +9,20 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class EarthSword implements Listener {
     private final CooldownManager cooldownManager;
-
+    public ItemStack createEarthSword() {
+        ItemStack earthSword = new ItemStack(Material.NETHERITE_SWORD);
+        ItemMeta meta = earthSword.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName("§aEarth Sword");
+            meta.setCustomModelData(9);
+            earthSword.setItemMeta(meta);
+        }
+        return earthSword;
+    }
     public EarthSword(CooldownManager cooldownManager) {
         this.cooldownManager = cooldownManager;
     }

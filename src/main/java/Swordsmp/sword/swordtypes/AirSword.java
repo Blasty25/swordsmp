@@ -8,10 +8,21 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class AirSword implements Listener {
     private final CooldownManager cooldownManager;
 
+    public ItemStack createAirSword() {
+        ItemStack airSword = new ItemStack(Material.NETHERITE_SWORD);
+        ItemMeta meta = airSword.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName("§fAir Sword");
+            meta.setCustomModelData(11);
+            airSword.setItemMeta(meta);
+        }
+        return airSword;
+    }
     public AirSword(CooldownManager cooldownManager) {
         this.cooldownManager = cooldownManager;
     }

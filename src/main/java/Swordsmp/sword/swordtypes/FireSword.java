@@ -8,9 +8,21 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class FireSword implements Listener {
     private final CooldownManager cooldownManager;
+
+    public ItemStack createFireSword() {
+        ItemStack fireSword = new ItemStack(Material.NETHERITE_SWORD);
+        ItemMeta meta = fireSword.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName("§cFire Sword"); // Set the display name
+            meta.setCustomModelData(8); // Set custom model data (adjust as necessary)
+            fireSword.setItemMeta(meta);
+        }
+        return fireSword;
+    }
 
     public FireSword(CooldownManager cooldownManager) {
         this.cooldownManager = cooldownManager;

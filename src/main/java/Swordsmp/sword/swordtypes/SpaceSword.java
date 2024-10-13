@@ -9,10 +9,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class SpaceSword implements Listener {
     private final CooldownManager cooldownManager;
-
+    public ItemStack createSpaceSword() {
+        ItemStack spaceSword = new ItemStack(Material.NETHERITE_SWORD);
+        ItemMeta meta = spaceSword.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName("§5Space Sword");
+            meta.setCustomModelData(10);
+            spaceSword.setItemMeta(meta);
+        }
+        return spaceSword;
+    }
     public SpaceSword(CooldownManager cooldownManager) {
         this.cooldownManager = cooldownManager;
     }

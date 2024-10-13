@@ -13,11 +13,16 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-
 public final class Sword extends JavaPlugin implements Listener {
     private static Sword instance;
-    private CooldownManager cooldownManager; // Declare cooldownManager here
+    private CooldownManager cooldownManager;
     private FileConfiguration config;
+    private DragonSword dragonSword;
+    private FireSword fireSword;
+    private WaterSword waterSword;
+    private EarthSword earthSword;
+    private SpaceSword spaceSword;
+    private AirSword airSword;
 
     @Override
     public void onEnable() {
@@ -26,11 +31,18 @@ public final class Sword extends JavaPlugin implements Listener {
         config.options().copyDefaults(true);
         saveConfig();
 
-        registerRecipes();
-        // Initialize CooldownManager
-        cooldownManager = new CooldownManager();
+        cooldownManager = new CooldownManager(); // Initialize cooldownManager
+        dragonSword = new DragonSword(new CooldownManager());
+        fireSword = new FireSword(new CooldownManager()); // Initialize other swords accordingly
+        waterSword = new WaterSword(new CooldownManager());
+        earthSword = new EarthSword(new CooldownManager());
+        spaceSword = new SpaceSword(new CooldownManager());
+        airSword = new AirSword(new CooldownManager());
 
-        // Register sword event handlers
+        // Register commands
+        getCommand("give").setExecutor(new GiveCommandExecutor(dragonSword, fireSword, waterSword, earthSword, spaceSword, airSword));
+
+        // Register all sword event listeners
         getServer().getPluginManager().registerEvents(new FireSword(cooldownManager), this);
         getServer().getPluginManager().registerEvents(new WaterSword(cooldownManager), this);
         getServer().getPluginManager().registerEvents(new EarthSword(cooldownManager), this);
@@ -39,6 +51,7 @@ public final class Sword extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new DragonSword(cooldownManager), this);
         getServer().getPluginManager().registerEvents(this, this);
 
+        registerRecipes(); // Register crafting recipes
 
         // Additional plugin startup logic
         Bukkit.getLogger().info("Sword plugin has started!");
@@ -69,8 +82,6 @@ public final class Sword extends JavaPlugin implements Listener {
         }
     }
 
-    // Add similar methods for other swords...
-
     private void registerFireSwordRecipe() {
         ItemStack fireSword = new ItemStack(Material.NETHERITE_SWORD);
         ItemMeta meta = fireSword.getItemMeta();
@@ -79,25 +90,18 @@ public final class Sword extends JavaPlugin implements Listener {
             fireSword.setItemMeta(meta);
         }
 
-        // Create a new NamespacedKey for the recipe
         NamespacedKey key = new NamespacedKey(this, "fire_sword");
-
-        // Define the recipe shape (3x3 grid)
         ShapedRecipe fireSwordRecipe = new ShapedRecipe(key, fireSword);
         fireSwordRecipe.shape(
-                " FAF ",  // Top row
-                "CNC",  // Middle row
-                " FAF "   // Bottom row
+                " FAF ",
+                "CNC",
+                " FAF "
         );
-
-        // Set the ingredients for each letter in the shape
-        fireSwordRecipe.setIngredient('F', Material.NETHERITE_INGOT);  // Blaze powder in the top center
-        fireSwordRecipe.setIngredient('N', Material.NETHERITE_SWORD);  // Netherite in the middle
-        fireSwordRecipe.setIngredient('A', Material.WITHER_ROSE);  // Diamonds in bottom corners
+        fireSwordRecipe.setIngredient('F', Material.NETHERITE_INGOT);
+        fireSwordRecipe.setIngredient('N', Material.NETHERITE_SWORD);
+        fireSwordRecipe.setIngredient('A', Material.WITHER_ROSE);
         fireSwordRecipe.setIngredient('C', Material.WITHER_SKELETON_SKULL);
 
-
-        // Register the recipe with Bukkit
         Bukkit.addRecipe(fireSwordRecipe);
     }
 
@@ -111,15 +115,11 @@ public final class Sword extends JavaPlugin implements Listener {
 
         NamespacedKey key = new NamespacedKey(this, "water_sword");
         ShapedRecipe waterSwordRecipe = new ShapedRecipe(key, waterSword);
-
-        // Change shape and materials as needed
         waterSwordRecipe.shape(
-                " WAW ",  // Top row
-                "NCN",  // Middle row
-                " WAW "   // Bottom row
+                " WAW ",
+                "NCN",
+                " WAW "
         );
-
-        // Set the materials used for crafting
         waterSwordRecipe.setIngredient('W', Material.CONDUIT);
         waterSwordRecipe.setIngredient('N', Material.SPONGE);
         waterSwordRecipe.setIngredient('A', Material.TURTLE_EGG);
@@ -139,18 +139,17 @@ public final class Sword extends JavaPlugin implements Listener {
         NamespacedKey key = new NamespacedKey(this, "earth_sword");
         ShapedRecipe recipe = new ShapedRecipe(key, earthSword);
         recipe.shape(
-                " SVS ", // Top row
-                "VNV", // Middle row
-                " SVS "  // Bottom row
+                " SVS ",
+                "VNV",
+                " SVS "
         );
-        recipe.setIngredient('S', Material.DIAMOND_BLOCK); // Replace 'D' with an appropriate material
+        recipe.setIngredient('S', Material.DIAMOND_BLOCK);
         recipe.setIngredient('N', Material.NETHERITE_SWORD);
         recipe.setIngredient('V', Material.SILENCE_ARMOR_TRIM_SMITHING_TEMPLATE);
 
         Bukkit.addRecipe(recipe);
         markSwordCrafted("earth_sword");
     }
-
 
     private void registerSpaceSwordRecipe() {
         ItemStack spaceSword = new ItemStack(Material.NETHERITE_SWORD);
@@ -163,13 +162,13 @@ public final class Sword extends JavaPlugin implements Listener {
         NamespacedKey key = new NamespacedKey(this, "space_sword");
         ShapedRecipe recipe = new ShapedRecipe(key, spaceSword);
         recipe.shape(
-                " CEC ", // Top row
-                "NIN", // Middle row
-                " CEC "  // Bottom row
+                " CEC ",
+                "NIN",
+                " CEC "
         );
-        recipe.setIngredient('C', Material.ENDER_EYE); // Replace with appropriate material for space
+        recipe.setIngredient('C', Material.ENDER_EYE);
         recipe.setIngredient('N', Material.ENDER_CHEST);
-        recipe.setIngredient('I', Material.NETHERITE_SWORD); // Cosmic ingredient
+        recipe.setIngredient('I', Material.NETHERITE_SWORD);
         recipe.setIngredient('E', Material.ELYTRA);
 
         Bukkit.addRecipe(recipe);
@@ -187,13 +186,13 @@ public final class Sword extends JavaPlugin implements Listener {
         NamespacedKey key = new NamespacedKey(this, "air_sword");
         ShapedRecipe recipe = new ShapedRecipe(key, airSword);
         recipe.shape(
-                " FOF ", // Top row
-                "NPN", // Middle row
-                " FOF "  // Bottom row
+                " FOF ",
+                "NPN",
+                " FOF "
         );
-        recipe.setIngredient('F', Material.ENCHANTED_GOLDEN_APPLE); // Feather for air
+        recipe.setIngredient('F', Material.ENCHANTED_GOLDEN_APPLE);
         recipe.setIngredient('N', Material.HEAVY_CORE);
-        recipe.setIngredient('O', Material.BREEZE_ROD); // Air ingredient
+        recipe.setIngredient('O', Material.BREEZE_ROD);
         recipe.setIngredient('P', Material.DIAMOND_SWORD);
 
         Bukkit.addRecipe(recipe);
@@ -211,11 +210,11 @@ public final class Sword extends JavaPlugin implements Listener {
         NamespacedKey key = new NamespacedKey(this, "dragon_sword");
         ShapedRecipe recipe = new ShapedRecipe(key, dragonSword);
         recipe.shape(
-                " D ", // Top row
-                " N ", // Middle row
-                " KIK "  // Bottom row
+                " D ",
+                " N ",
+                " KIK "
         );
-        recipe.setIngredient('D', Material.DRAGON_HEAD); // Dragon Breath
+        recipe.setIngredient('D', Material.DRAGON_HEAD);
         recipe.setIngredient('N', Material.DRAGON_EGG);
         recipe.setIngredient('K', Material.END_ROD);
         recipe.setIngredient('I', Material.NETHERITE_SWORD);
@@ -231,22 +230,15 @@ public final class Sword extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onCraft(CraftItemEvent event) {
-        // Check if the crafted item is one of the swords
         if (event.getRecipe() instanceof ShapedRecipe recipe) {
             NamespacedKey key = recipe.getKey();
-
-            // Get the string representation of the key
             String swordKey = key.getKey(); // Gets the string key like "fire_sword"
-
-            // Mark the sword as crafted based on its key
             markSwordCrafted(swordKey);
         }
     }
 
-
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
         Bukkit.getLogger().info("Sword plugin has stopped!");
     }
 }

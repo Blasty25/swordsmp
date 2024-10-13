@@ -9,13 +9,23 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 import java.util.List;
 
 public class WaterSword implements Listener {
     private final CooldownManager cooldownManager;
-
+    public ItemStack createWaterSword() {
+        ItemStack waterSword = new ItemStack(Material.NETHERITE_SWORD);
+        ItemMeta meta = waterSword.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName("§bWater Sword");
+            meta.setCustomModelData(7);
+            waterSword.setItemMeta(meta);
+        }
+        return waterSword;
+    }
     public WaterSword(CooldownManager cooldownManager) {
         this.cooldownManager = cooldownManager;
     }
