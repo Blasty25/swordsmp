@@ -6,8 +6,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class GiveCommandExecutor implements CommandExecutor {
+
     private final DragonSword dragonSword;
     private final FireSword fireSword;
     private final WaterSword waterSword;
@@ -27,45 +29,54 @@ public class GiveCommandExecutor implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 2) {
-            String playerName = args[0];
-            String itemName = args[1];
-
-            Player target = Bukkit.getPlayer(playerName);
-            if (target != null && target.isOnline()) {
-                switch (itemName.toLowerCase()) {
-                    case "dragon_sword":
-                        target.getInventory().addItem(dragonSword.createDragonSword());
-                        target.sendMessage("You have been given a Dragon Sword!");
-                        break;
-                    case "fire_sword":
-                        target.getInventory().addItem(fireSword.createFireSword());
-                        target.sendMessage("You have been given a Fire Sword!");
-                        break;
-                    case "water_sword":
-                        target.getInventory().addItem(waterSword.createWaterSword());
-                        target.sendMessage("You have been given a Water Sword!");
-                        break;
-                    case "earth_sword":
-                        target.getInventory().addItem(earthSword.createEarthSword());
-                        target.sendMessage("You have been given an Earth Sword!");
-                        break;
-                    case "space_sword":
-                        target.getInventory().addItem(spaceSword.createSpaceSword());
-                        target.sendMessage("You have been given a Space Sword!");
-                        break;
-                    case "air_sword":
-                        target.getInventory().addItem(airSword.createAirSword());
-                        target.sendMessage("You have been given an Air Sword!");
-                        break;
-                    default:
-                        sender.sendMessage("Invalid item name. Available items: Dragon Sword, Fire Sword, Water Sword, Earth Sword, Space Sword, Air Sword");
-                }
-                return true;
-            } else {
-                sender.sendMessage("Player not found or offline.");
-            }
+        if (args.length != 2) {
+            sender.sendMessage("Usage: /give <player> <sword_name>");
+            return false;
         }
+
+        String playerName = args[0];
+        String itemName = args[1].toLowerCase(); // Normalize to lowercase for easier comparison
+        Player target = Bukkit.getPlayer(playerName);
+
+        if (target == null || !target.isOnline()) {
+            sender.sendMessage("Player not found or offline.");
+            return false;
+        }
+
+        ItemStack sword = null;
+
+        // Switch to handle which sword to give based on the itemName
+        switch (itemName) {
+            case "dragon_sword":
+                sword = dragonSword.createDragonSword();
+                break;
+            case "fire_sword":
+                sword = fireSword.createFireSword();
+                break;
+            case "water_sword":
+                sword = waterSword.createWaterSword();
+                break;
+            case "earth_sword":
+                sword = earthSword.createEarthSword();
+                break;
+            case "space_sword":
+                sword = spaceSword.createSpaceSword();
+                break;
+            case "air_sword":
+                sword = airSword.createAirSword();
+                break;
+            default:
+                sender.sendMessage("Invalid sword name. Available swords: dragon_sword, fire_sword, water_sword, earth_sword, space_sword, air_sword.");
+                return false;
+        }
+
+        if (sword != null) {
+            target.getInventory().addItem(sword);  // Add the sword to player's inventory
+            target.sendMessage("You have been given a " + itemName.replace("_", " ") + "!");
+            sender.sendMessage("Successfully gave " + itemName.replace("_", " ") + " to " + playerName);
+            return true;
+        }
+
         return false;
     }
 }

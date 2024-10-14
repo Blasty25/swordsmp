@@ -11,16 +11,26 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.util.Vector;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
 
 public class DragonSword implements Listener {
 
     private final CooldownManager cooldownManager;
     private int hitCount = 0;
-
+    public ItemStack createDragonSword() {
+        ItemStack dragonSword = new ItemStack(Material.NETHERITE_SWORD);
+        ItemMeta meta = dragonSword.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName("§6Dragon Sword");
+            meta.setCustomModelData(8); // Set custom model data (adjust as necessary)
+            dragonSword.setItemMeta(meta);
+        }
+        return dragonSword;
+    }
     public DragonSword(CooldownManager cooldownManager) {
         this.cooldownManager = cooldownManager;
     }
@@ -37,7 +47,23 @@ public class DragonSword implements Listener {
         ItemStack item = player.getInventory().getItemInMainHand();
 
         if (item.getType() == Material.NETHERITE_SWORD && hasDragonSwordTag(item)) {
-            applyDragonSwordPassives(player); // Apply passives when interacting
+            // Check cooldown
+            if (!cooldownManager.isOnCooldown(player, "dragon_sword")) {
+                LivingEntity target = getTargetEntity(player, 10); // Target within 10 blocks
+
+                if (target != null) {
+                    lockTargetInPlace(target); // Lock the target and apply dragon breath
+                    player.sendMessage("You have activated the Dragon Sword's ability!");
+
+                    // Set cooldown (600 seconds = 10 minutes)
+                    cooldownManager.setCooldown(player, "dragon_sword", 600);
+                } else {
+                    player.sendMessage("No valid target within range!");
+                }
+            } else {
+                long remainingTime = cooldownManager.getCooldownTime(player, "dragon_sword");
+                player.sendMessage("Dragon Sword is on cooldown for " + remainingTime + " more seconds!");
+            }
         }
     }
 
@@ -50,23 +76,11 @@ public class DragonSword implements Listener {
             if (item.getType() == Material.NETHERITE_SWORD && hasDragonSwordTag(item)) {
                 hitCount++;
 
-                // Check cooldown
-                if (!cooldownManager.isOnCooldown(player, "dragon_sword")) {
+                // Launch every 5th hit and deal extra damage
+                if (hitCount % 5 == 0) {
                     LivingEntity target = (LivingEntity) event.getEntity();
-
-                    // Launch every 5th hit
-                    if (hitCount % 5 == 0) {
-                        launchPlayer(target);
-                        // Apply extra damage
-                        event.setDamage(event.getDamage() * 1.2); // 20% more damage
-                        lockTargetInPlace(target); // Lock the target in place
-                    }
-
-                    // Set cooldown
-                    cooldownManager.setCooldown(player, "dragon_sword", 600); // 10-minute cooldown
-                } else {
-                    long remainingTime = cooldownManager.getCooldownTime(player, "dragon_sword");
-                    player.sendMessage("Dragon Sword is on cooldown for " + remainingTime + " more seconds!");
+                    launchPlayer(target);
+                    event.setDamage(event.getDamage() * 1.2); // 20% more damage
                 }
             }
         }
@@ -75,18 +89,17 @@ public class DragonSword implements Listener {
     // This method locks the target in place and surrounds them with dragon breath
     public void lockTargetInPlace(LivingEntity target) {
         target.setVelocity(new Vector(0, 0, 0)); // Lock the target in place
-        target.sendMessage("You are locked in place!");
 
         // Surround target with dragon breath
         new BukkitRunnable() {
             int duration = 10; // 10 seconds of effect
+
             @Override
             public void run() {
                 if (duration <= 0) {
                     cancel(); // Stop after 10 seconds
-                    target.sendMessage("You are free!");
                 } else {
-                    // Implement logic to apply dragon breath effect here
+                    // You would implement actual dragon breath particle and damage effects here
                     target.sendMessage("You are surrounded by dragon breath!");
                     duration--;
                 }
@@ -105,15 +118,19 @@ public class DragonSword implements Listener {
                 && item.getItemMeta().hasCustomModelData() && item.getItemMeta().getCustomModelData() == 6; // Change 6 to your Dragon Sword's custom model data
     }
 
-    // Create the Dragon Sword ItemStack
-    public ItemStack createDragonSword() {
-        ItemStack dragonSword = new ItemStack(Material.NETHERITE_SWORD);
-        ItemMeta meta = dragonSword.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName("§cDragon Sword"); // Set the display name
-            meta.setCustomModelData(6); // Set custom model data (adjust as necessary)
-            dragonSword.setItemMeta(meta);
+    // Method to get the target entity the player is looking at within a certain range
+    public LivingEntity getTargetEntity(Player player, double range) {
+        RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(
+                player.getEyeLocation(),
+                player.getLocation().getDirection(),
+                range,
+                entity -> entity instanceof LivingEntity && entity != player
+        );
+
+        if (rayTraceResult != null) {
+            return (LivingEntity) rayTraceResult.getHitEntity();
+        } else {
+            return null;
         }
-        return dragonSword;
     }
 }
