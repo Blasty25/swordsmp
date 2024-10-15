@@ -8,12 +8,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class GiveCommandExecutor implements CommandExecutor {
-    private final FireSword fireSword;
     private final WaterSword waterSword;
+    private final FireSword fireSword; // Add more sword types as needed
 
-    public GiveCommandExecutor(FireSword fireSword, WaterSword waterSword) {
-        this.fireSword = fireSword;
+    public GiveCommandExecutor(WaterSword waterSword, FireSword fireSword) {
         this.waterSword = waterSword;
+        this.fireSword = fireSword; // Initialize other swords as needed
     }
 
     @Override
@@ -33,14 +33,18 @@ public class GiveCommandExecutor implements CommandExecutor {
                         target.getInventory().addItem(fireSword.createFireSword());
                         target.sendMessage("You have been given a Fire Sword!");
                         break;
+                    // Add more cases for additional swords here
                     default:
-                        sender.sendMessage("Invalid sword number. Available: 1 (Water), 2 (Fire), 3 (Earth), 4 (Dragon), 5 (Space), 6 (Air)");
+                        sender.sendMessage("Invalid sword number. Available: 1 (Water), 2 (Fire), ...");
                 }
                 return true;
             } else {
                 sender.sendMessage("Player not found or offline.");
+                return false;
             }
+        } else {
+            sender.sendMessage("Usage: /give <player> <sword_number>");
+            return false;
         }
-        return false;
     }
 }

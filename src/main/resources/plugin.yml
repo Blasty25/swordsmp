@@ -5,5 +5,4 @@ api-version: '1.21'
 commands:
   give:
     description: Gives the specified item to a player
-    usage: /give <player> <item>
-
+    usage: /give <player> <sword_type>

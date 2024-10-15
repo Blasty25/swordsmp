@@ -7,26 +7,25 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Sword extends JavaPlugin {
     private CooldownManager cooldownManager;
+    private WaterSword waterSword;
+    private FireSword fireSword;
 
     @Override
     public void onEnable() {
         cooldownManager = new CooldownManager();
+        waterSword = new WaterSword(cooldownManager);
+        fireSword = new FireSword(cooldownManager);
 
         // Register the swords and their events
-        WaterSword waterSword = new WaterSword(cooldownManager);
-        FireSword fireSword = new FireSword(cooldownManager);
+        getServer().getPluginManager().registerEvents(waterSword, this);
+        getServer().getPluginManager().registerEvents(fireSword, this);
 
-        getServer().getPluginManager().registerEvents(new WaterSword(cooldownManager), this);
-        getServer().getPluginManager().registerEvents(new FireSword(cooldownManager), this);
-
-
-        // Register command executor with numbers for each sword
-        getCommand("give").setExecutor(new GiveCommandExecutor(fireSword, waterSword));
+        // Register command executor
+        getCommand("give").setExecutor(new GiveCommandExecutor(waterSword, fireSword));
     }
 
-@Override
+    @Override
     public void onDisable() {
         Bukkit.getLogger().info("Sword plugin has stopped!");
     }
-
 }
