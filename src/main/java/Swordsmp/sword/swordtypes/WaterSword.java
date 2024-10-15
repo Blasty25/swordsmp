@@ -4,7 +4,6 @@ import Swordsmp.sword.CooldownManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,9 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
-
-import java.util.List;
 
 public class WaterSword implements Listener {
     private final CooldownManager cooldownManager;
@@ -30,7 +26,7 @@ public class WaterSword implements Listener {
         ItemMeta meta = waterSword.getItemMeta();
         if (meta != null) {
             meta.setDisplayName("§bWater Sword");
-            meta.setCustomModelData(7);
+            meta.setCustomModelData(1);
             waterSword.setItemMeta(meta);
         }
         return waterSword;
@@ -41,11 +37,12 @@ public class WaterSword implements Listener {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (item.getType() == Material.NETHERITE_SWORD && hasWaterSwordTag(item)) {
+        if (hasSpecificSword(player, 1)) {
+            player.sendMessage("You have the Water Sword!");
             if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (!cooldownManager.isOnCooldown(player, "water_sword")) {
                     if (isPlayerTouchingWater(player)) {
-                        player.addPotionEffect((new PotionEffect(PotionEffectType.RESISTANCE,30*20, 1,true,false)));
+                        player.addPotionEffect((new PotionEffect(PotionEffectType.RESISTANCE, 30 * 20, 1, true, false)));
                         player.sendMessage("You are touching water! You now have Resistance 2 for 30 seconds!");
                     } else {
                         player.sendMessage("You are not touching water.");
@@ -55,16 +52,37 @@ public class WaterSword implements Listener {
                     long remainingTime = cooldownManager.getCooldownTime(player, "water_sword");
                     player.sendMessage("Water Sword is on cooldown for " + remainingTime + " more seconds!");
                 }
+            }
 
-                // Check if the player is in water
+            // Check if the player is in water
 
 
-                // Apply Water Breathing effect
-                player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, Integer.MAX_VALUE, 0, true, false));
-                player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, Integer.MAX_VALUE, 0, true, false));
+            // Apply Water Breathing effect
+        }
+        player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, Integer.MAX_VALUE, 0, true, false));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, Integer.MAX_VALUE, 0, true, false));
+
+    }
+
+    public boolean hasSpecificSword(Player player, int swordNumber) {
+        // Get the player's inventory
+        ItemStack[] inventory = player.getInventory().getContents();
+
+        // Loop through the inventory
+        for (ItemStack item : inventory) {
+            if (item != null && item.getType() == Material.NETHERITE_SWORD) {
+                ItemMeta meta = item.getItemMeta();
+                if (meta != null && meta.hasCustomModelData()) {
+                    // Check if the CustomModelData matches the specified sword number
+                    if (meta.getCustomModelData() == swordNumber) {
+                        return true; // Player has the sword
+                    }
+                }
             }
         }
+        return false; // Player doesn't have the sword
     }
+
 
     private boolean isPlayerTouchingWater(Player player) {
         // Get the player's location
@@ -82,20 +100,7 @@ public class WaterSword implements Listener {
         }
         return false; // The player is not touching water
     }
-/*
-    private void launchNearbyPlayers(Player player) {
-        double radius = 5.0;
-        List<Entity> nearbyEntities = player.getNearbyEntities(radius, radius, radius);
 
-        for (Entity entity : nearbyEntities) {
-            if (entity instanceof Player) {
-                Player nearbyPlayer = (Player) entity;
-                nearbyPlayer.setVelocity(new Vector(0, 1, 0).multiply(25));
-                nearbyPlayer.sendMessage("You were launched by the Water Sword!");
-            }
-        }
-    }
-*/
     private boolean hasWaterSwordTag(ItemStack item) {
         // Logic to check for Water Sword tag
         return true; // Replace with actual tag checking logic

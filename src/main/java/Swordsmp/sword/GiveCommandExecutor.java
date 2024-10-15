@@ -8,9 +8,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class GiveCommandExecutor implements CommandExecutor {
+    private final FireSword fireSword;
     private final WaterSword waterSword;
 
-    public GiveCommandExecutor(WaterSword waterSword) {
+    public GiveCommandExecutor(FireSword fireSword, WaterSword waterSword) {
+        this.fireSword = fireSword;
         this.waterSword = waterSword;
     }
 
@@ -26,6 +28,10 @@ public class GiveCommandExecutor implements CommandExecutor {
                     case "1":
                         target.getInventory().addItem(waterSword.createWaterSword());
                         target.sendMessage("You have been given a Water Sword!");
+                        break;
+                    case "2":
+                        target.getInventory().addItem(fireSword.createFireSword());
+                        target.sendMessage("You have been given a Fire Sword!");
                         break;
                     default:
                         sender.sendMessage("Invalid sword number. Available: 1 (Water), 2 (Fire), 3 (Earth), 4 (Dragon), 5 (Space), 6 (Air)");
