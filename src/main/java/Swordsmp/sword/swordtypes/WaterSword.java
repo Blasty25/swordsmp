@@ -44,7 +44,12 @@ public class WaterSword implements Listener {
         if (item.getType() == Material.NETHERITE_SWORD && hasWaterSwordTag(item)) {
             if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (!cooldownManager.isOnCooldown(player, "water_sword")) {
-                    launchNearbyPlayers(player);
+                    if (isPlayerTouchingWater(player)) {
+                        player.addPotionEffect((new PotionEffect(PotionEffectType.RESISTANCE,30*20, 1,true,false)));
+                        player.sendMessage("You are touching water! You now have Resistance 2 for 30 seconds!");
+                    } else {
+                        player.sendMessage("You are not touching water.");
+                    }
                     cooldownManager.setCooldown(player, "water_sword", 150);
                 } else {
                     long remainingTime = cooldownManager.getCooldownTime(player, "water_sword");
@@ -52,14 +57,10 @@ public class WaterSword implements Listener {
                 }
 
                 // Check if the player is in water
-                if (isPlayerTouchingWater(player)) {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, Integer.MAX_VALUE, 0, true, false));
-                    player.sendMessage("You are touching water! You now have Dolphins Grace!");
-                } else {
-                    player.sendMessage("You are not touching water.");
-                }
+
 
                 // Apply Water Breathing effect
+                player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, Integer.MAX_VALUE, 0, true, false));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, Integer.MAX_VALUE, 0, true, false));
             }
         }
@@ -81,7 +82,7 @@ public class WaterSword implements Listener {
         }
         return false; // The player is not touching water
     }
-
+/*
     private void launchNearbyPlayers(Player player) {
         double radius = 5.0;
         List<Entity> nearbyEntities = player.getNearbyEntities(radius, radius, radius);
@@ -94,7 +95,7 @@ public class WaterSword implements Listener {
             }
         }
     }
-
+*/
     private boolean hasWaterSwordTag(ItemStack item) {
         // Logic to check for Water Sword tag
         return true; // Replace with actual tag checking logic
