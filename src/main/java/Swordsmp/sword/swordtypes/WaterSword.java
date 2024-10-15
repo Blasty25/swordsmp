@@ -1,7 +1,9 @@
 package Swordsmp.sword.swordtypes;
 
 import Swordsmp.sword.CooldownManager;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,6 +12,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.List;
@@ -46,8 +50,36 @@ public class WaterSword implements Listener {
                     long remainingTime = cooldownManager.getCooldownTime(player, "water_sword");
                     player.sendMessage("Water Sword is on cooldown for " + remainingTime + " more seconds!");
                 }
+
+                // Check if the player is in water
+                if (isPlayerTouchingWater(player)) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, Integer.MAX_VALUE, 0, true, false));
+                    player.sendMessage("You are touching water! You now have Dolphins Grace!");
+                } else {
+                    player.sendMessage("You are not touching water.");
+                }
+
+                // Apply Water Breathing effect
+                player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, Integer.MAX_VALUE, 0, true, false));
             }
         }
+    }
+
+    private boolean isPlayerTouchingWater(Player player) {
+        // Get the player's location
+        Location playerLocation = player.getLocation();
+
+        // Get the player's bounding box to check if they are in contact with water
+        for (double x = -0.5; x <= 0.5; x += 0.5) {
+            for (double z = -0.5; z <= 0.5; z += 0.5) {
+                // Check the block at the player's feet and the surrounding blocks
+                Block block = playerLocation.clone().add(x, -1, z).getBlock();
+                if (block.getType() == Material.WATER) {
+                    return true; // The player is touching water
+                }
+            }
+        }
+        return false; // The player is not touching water
     }
 
     private void launchNearbyPlayers(Player player) {
