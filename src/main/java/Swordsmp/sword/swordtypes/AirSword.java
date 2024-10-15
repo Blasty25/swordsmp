@@ -13,18 +13,19 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class AirSword implements Listener {
     private final CooldownManager cooldownManager;
 
+    public AirSword(CooldownManager cooldownManager) {
+        this.cooldownManager = cooldownManager;
+    }
+
     public ItemStack createAirSword() {
         ItemStack airSword = new ItemStack(Material.NETHERITE_SWORD);
         ItemMeta meta = airSword.getItemMeta();
         if (meta != null) {
             meta.setDisplayName("§fAir Sword");
-            meta.setCustomModelData(11);
+            meta.setCustomModelData(12);
             airSword.setItemMeta(meta);
         }
         return airSword;
-    }
-    public AirSword(CooldownManager cooldownManager) {
-        this.cooldownManager = cooldownManager;
     }
 
     @EventHandler
@@ -35,8 +36,8 @@ public class AirSword implements Listener {
         if (item.getType() == Material.NETHERITE_SWORD && hasAirSwordTag(item)) {
             if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (!cooldownManager.isOnCooldown(player, "air_sword")) {
-                    launchPlayerInAir(player);
-                    cooldownManager.setCooldown(player, "air_sword", 150); // Set cooldown
+                    increasePlayerHearts(player); // Implement Air Sword ability
+                    cooldownManager.setCooldown(player, "air_sword", 240); // 240-second cooldown
                 } else {
                     long remainingTime = cooldownManager.getCooldownTime(player, "air_sword");
                     player.sendMessage("Air Sword is on cooldown for " + remainingTime + " more seconds!");
@@ -45,13 +46,13 @@ public class AirSword implements Listener {
         }
     }
 
-    private void launchPlayerInAir(Player player) {
-        player.setVelocity(player.getLocation().getDirection().multiply(0).setY(2)); // Adjust the Y component to launch the player up
-        player.sendMessage("You have been launched into the air!");
+    private void increasePlayerHearts(Player player) {
+        // Air Sword ability: increase player's max health
+        player.setMaxHealth(30); // Increase to 15 hearts
+        player.sendMessage("Your health increased with the Air Sword!");
     }
 
     private boolean hasAirSwordTag(ItemStack item) {
-        // Logic to check for Air Sword tag
-        return true; // Replace with actual tag checking logic
+        return true; // Implement actual logic to check for Air Sword tag
     }
 }

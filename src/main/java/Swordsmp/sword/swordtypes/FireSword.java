@@ -13,19 +13,19 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class FireSword implements Listener {
     private final CooldownManager cooldownManager;
 
+    public FireSword(CooldownManager cooldownManager) {
+        this.cooldownManager = cooldownManager;
+    }
+
     public ItemStack createFireSword() {
         ItemStack fireSword = new ItemStack(Material.NETHERITE_SWORD);
         ItemMeta meta = fireSword.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName("§cFire Sword"); // Set the display name
-            meta.setCustomModelData(8); // Set custom model data (adjust as necessary)
+            meta.setDisplayName("§cFire Sword");
+            meta.setCustomModelData(8);
             fireSword.setItemMeta(meta);
         }
         return fireSword;
-    }
-
-    public FireSword(CooldownManager cooldownManager) {
-        this.cooldownManager = cooldownManager;
     }
 
     @EventHandler
@@ -36,21 +36,14 @@ public class FireSword implements Listener {
         if (item.getType() == Material.NETHERITE_SWORD && hasFireSwordTag(item)) {
             if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (!cooldownManager.isOnCooldown(player, "fire_sword")) {
-                    shootPlayerForward(player); // Implement your ability
-                    cooldownManager.setCooldown(player, "fire_sword", 150); // Set cooldown
+                    // Implement Fire Sword ability
+                    cooldownManager.setCooldown(player, "fire_sword", 150);
                 } else {
                     long remainingTime = cooldownManager.getCooldownTime(player, "fire_sword");
                     player.sendMessage("Fire Sword is on cooldown for " + remainingTime + " more seconds!");
                 }
             }
         }
-    }
-
-    // Implement the methods for ability and tag checking
-    private void shootPlayerForward(Player player) {
-        // Logic to shoot the player forward
-        player.setVelocity(player.getLocation().getDirection().multiply(2)); // Example
-        player.sendMessage("You have been shot forward!");
     }
 
     private boolean hasFireSwordTag(ItemStack item) {

@@ -1,7 +1,6 @@
 package Swordsmp.sword.swordtypes;
 
 import Swordsmp.sword.CooldownManager;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,18 +12,20 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class SpaceSword implements Listener {
     private final CooldownManager cooldownManager;
+
+    public SpaceSword(CooldownManager cooldownManager) {
+        this.cooldownManager = cooldownManager;
+    }
+
     public ItemStack createSpaceSword() {
         ItemStack spaceSword = new ItemStack(Material.NETHERITE_SWORD);
         ItemMeta meta = spaceSword.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName("§5Space Sword");
-            meta.setCustomModelData(10);
+            meta.setDisplayName("§9Space Sword");
+            meta.setCustomModelData(11);
             spaceSword.setItemMeta(meta);
         }
         return spaceSword;
-    }
-    public SpaceSword(CooldownManager cooldownManager) {
-        this.cooldownManager = cooldownManager;
     }
 
     @EventHandler
@@ -35,8 +36,8 @@ public class SpaceSword implements Listener {
         if (item.getType() == Material.NETHERITE_SWORD && hasSpaceSwordTag(item)) {
             if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (!cooldownManager.isOnCooldown(player, "space_sword")) {
-                    turnToSpectator(player);
-                    cooldownManager.setCooldown(player, "space_sword", 300); // Set cooldown
+                    teleportPlayer(player); // Implement teleport ability
+                    cooldownManager.setCooldown(player, "space_sword", 300); // 300-second cooldown
                 } else {
                     long remainingTime = cooldownManager.getCooldownTime(player, "space_sword");
                     player.sendMessage("Space Sword is on cooldown for " + remainingTime + " more seconds!");
@@ -45,13 +46,13 @@ public class SpaceSword implements Listener {
         }
     }
 
-    private void turnToSpectator(Player player) {
-        player.setGameMode(GameMode.SPECTATOR);
-        player.sendMessage("You have been turned into a spectator!");
+    private void teleportPlayer(Player player) {
+        // Space Sword ability: teleport player to a random location
+        player.teleport(player.getLocation().add(0, 5, 0)); // Example teleport
+        player.sendMessage("You teleported using the Space Sword!");
     }
 
     private boolean hasSpaceSwordTag(ItemStack item) {
-        // Logic to check for Space Sword tag
-        return true; // Replace with actual tag checking logic
+        return true; // Implement actual logic to check for Space Sword tag
     }
 }
