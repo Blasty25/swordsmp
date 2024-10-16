@@ -34,6 +34,10 @@ public class GiveCommandExecutor implements CommandExecutor {
                         target.sendMessage("You have been given a Fire Sword!");
                         break;
                     // Add more cases for additional swords here
+                    case "3":
+                        target.getInventory().addItem(earthSword.createEarthSword());
+                        target.sendMessage("You have been given a Earth Sword");
+                        break;
                     default:
                         sender.sendMessage("Invalid sword number. Available: 1 (Water), 2 (Fire), ...");
                 }
