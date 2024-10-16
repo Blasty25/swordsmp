@@ -1,5 +1,6 @@
 package Swordsmp.sword;
 
+import Swordsmp.sword.swordtypes.EarthSword;
 import Swordsmp.sword.swordtypes.FireSword;
 import Swordsmp.sword.swordtypes.WaterSword;
 import org.bukkit.entity.Player;
@@ -13,11 +14,13 @@ public class SwordManager implements Listener {
     private final CooldownManager cooldownManager;
     private final WaterSword waterSword;
     private final FireSword fireSword;
+    private final EarthSword earthSword;
 
     public SwordManager(JavaPlugin plugin, CooldownManager cooldownManager) {
         this.cooldownManager = cooldownManager;
         this.waterSword = new WaterSword(cooldownManager);
         this.fireSword = new FireSword(cooldownManager);
+        this.earthSword = new EarthSword(cooldownManager);
 
         // Register events
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -37,6 +40,9 @@ public class SwordManager implements Listener {
                     break;
                 case 2: // Fire Sword
                     fireSword.handleAbility(player);
+                    break;
+                case 3:
+                    earthSword.handleAbility(player);
                     break;
                 default:
                     break;

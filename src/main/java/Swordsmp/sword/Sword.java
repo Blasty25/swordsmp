@@ -1,5 +1,6 @@
 package Swordsmp.sword;
 
+import Swordsmp.sword.swordtypes.EarthSword;
 import Swordsmp.sword.swordtypes.FireSword;
 import Swordsmp.sword.swordtypes.WaterSword;
 import org.bukkit.Bukkit;

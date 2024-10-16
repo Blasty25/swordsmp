@@ -9,11 +9,13 @@ import org.bukkit.entity.Player;
 
 public class GiveCommandExecutor implements CommandExecutor {
     private final WaterSword waterSword;
-    private final FireSword fireSword; // Add more sword types as needed
+    private final FireSword fireSword; // Add more sword types as
+    private  final  EarthSword earthSword;
 
-    public GiveCommandExecutor(WaterSword waterSword, FireSword fireSword) {
+    public GiveCommandExecutor(WaterSword waterSword, FireSword fireSword, EarthSword earthSword) {
         this.waterSword = waterSword;
         this.fireSword = fireSword; // Initialize other swords as needed
+        this.earthSword = earthSword;
     }
 
     @Override
