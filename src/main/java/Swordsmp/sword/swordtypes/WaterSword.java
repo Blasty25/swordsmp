@@ -18,11 +18,13 @@ import org.bukkit.util.Vector;
 import java.util.List;
 
 public class WaterSword implements Listener {
+    private static WaterSword instance;
     private final CooldownManager cooldownManager;
 
     public WaterSword(CooldownManager cooldownManager) {
         this.cooldownManager = cooldownManager;
     }
+
 
     public ItemStack createWaterSword() {
         ItemStack waterSword = new ItemStack(Material.NETHERITE_SWORD);
@@ -33,6 +35,13 @@ public class WaterSword implements Listener {
             waterSword.setItemMeta(meta);
         }
         return waterSword;
+    }
+
+    public static WaterSword getInstance(CooldownManager cooldownManager) {
+        if (instance == null) {
+            instance = new WaterSword(cooldownManager);
+        }
+        return instance;
     }
 
     @EventHandler

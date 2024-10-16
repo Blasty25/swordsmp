@@ -1,7 +1,6 @@
 package Swordsmp.sword.swordtypes;
 
 import Swordsmp.sword.CooldownManager;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -17,9 +16,18 @@ import org.bukkit.potion.PotionEffectType;
 
 public class EarthSword implements Listener {
     private final CooldownManager cooldownManager;
+    private static EarthSword instance;
+
 
     public EarthSword(CooldownManager cooldownManager) {
         this.cooldownManager = cooldownManager;
+    }
+
+    public static EarthSword getInstance(CooldownManager cooldownManager) {
+        if (instance == null) {
+            instance = new EarthSword(cooldownManager);
+        }
+        return instance;
     }
 
     public ItemStack createEarthSword() {
