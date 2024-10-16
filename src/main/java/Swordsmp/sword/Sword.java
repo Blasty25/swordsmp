@@ -19,7 +19,6 @@ public class Sword extends JavaPlugin {
         fireSword = new FireSword(cooldownManager);
         earthSword = new EarthSword(cooldownManager);
 
-        while (isEnabled()) {
             getServer().getPluginManager().registerEvents(waterSword, this);
             getServer().getPluginManager().registerEvents(fireSword, this);
             getServer().getPluginManager().registerEvents(earthSword,this);
@@ -27,7 +26,6 @@ public class Sword extends JavaPlugin {
 
             // Register command executor
             getCommand("give").setExecutor(new GiveCommandExecutor(waterSword, fireSword, earthSword));
-        }
     }
 
 

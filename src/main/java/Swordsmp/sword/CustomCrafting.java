@@ -14,7 +14,10 @@ public final class CustomCrafting {
     static Boolean isFireSwordCrafted = false;
     static Boolean isEarthSwordCrafted = false;
 
+
+
     public static void register() {
+        Bukkit.getLogger().info("debug");
         ShapedRecipe recipe1 = new ShapedRecipe(new NamespacedKey("Swordsmp", "water_sword"), WaterSword.getInstance(null).createWaterSword());
         recipe1.shape(
                 "DOD",
@@ -27,6 +30,7 @@ public final class CustomCrafting {
 
         // Register the recipe
         Bukkit.addRecipe(recipe1);
+        Bukkit.getLogger().info("Water crafted");
 
         // Check if Fire Sword is crafted
         if (isFireSwordCrafted) {
