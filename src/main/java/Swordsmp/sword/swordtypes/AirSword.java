@@ -47,6 +47,13 @@ public class AirSword implements Listener {
         }
     }
 
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+
+        if (player.getMaxHealth() == 20.0) player.resetMaxHealth();
+    }
+
     public void handleAbility(Player player) {
         player.setMaxHealth(20); // Increase to 20 hearts
         player.setHealth(Math.min(player.getHealth(), 20));
