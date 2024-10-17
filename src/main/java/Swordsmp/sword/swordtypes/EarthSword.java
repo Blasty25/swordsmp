@@ -20,14 +20,8 @@ public class EarthSword implements Listener {
 
 
     public EarthSword(CooldownManager cooldownManager) {
-        this.cooldownManager = cooldownManager;
-    }
 
-    public static EarthSword getInstance(CooldownManager cooldownManager) {
-        if (instance == null) {
-            instance = new EarthSword(cooldownManager);
-        }
-        return instance;
+        this.cooldownManager = cooldownManager;
     }
 
     public ItemStack createEarthSword() {

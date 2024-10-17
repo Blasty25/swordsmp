@@ -1,8 +1,6 @@
 package Swordsmp.sword;
 
-import Swordsmp.sword.swordtypes.EarthSword;
-import Swordsmp.sword.swordtypes.FireSword;
-import Swordsmp.sword.swordtypes.WaterSword;
+import Swordsmp.sword.swordtypes.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -11,6 +9,9 @@ public class Sword extends JavaPlugin {
     private WaterSword waterSword;
     private FireSword fireSword;
     private EarthSword earthSword;
+    private SpaceSword spaceSword;
+    private AirSword airSword;
+    private DragonSword dragonSword;
 
     @Override
     public void onEnable() {
@@ -18,14 +19,22 @@ public class Sword extends JavaPlugin {
         waterSword = new WaterSword(cooldownManager);
         fireSword = new FireSword(cooldownManager);
         earthSword = new EarthSword(cooldownManager);
+        spaceSword = new SpaceSword(cooldownManager);
+        airSword = new AirSword(cooldownManager);
+        dragonSword = new DragonSword(cooldownManager);
+
 
             getServer().getPluginManager().registerEvents(waterSword, this);
             getServer().getPluginManager().registerEvents(fireSword, this);
             getServer().getPluginManager().registerEvents(earthSword,this);
-            CustomCrafting.register();
+            getServer().getPluginManager().registerEvents(spaceSword, this);
+            getServer().getPluginManager().registerEvents(airSword, this);
+            getServer().getPluginManager().registerEvents(dragonSword, this);
+
+
 
             // Register command executor
-            getCommand("give").setExecutor(new GiveCommandExecutor(waterSword, fireSword, earthSword));
+            getCommand("give").setExecutor(new GiveCommandExecutor(waterSword, fireSword, earthSword, spaceSword, airSword, dragonSword));
     }
 
 

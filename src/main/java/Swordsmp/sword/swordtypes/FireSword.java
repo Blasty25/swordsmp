@@ -22,12 +22,6 @@ public class FireSword implements Listener {
     public FireSword(CooldownManager cooldownManager) {
         this.cooldownManager = cooldownManager;
     }
-    public static FireSword getInstance(CooldownManager cooldownManager) {
-        if (instance == null) {
-            instance = new FireSword(cooldownManager);
-        }
-        return instance;
-    }
 
     public ItemStack createFireSword() {
         ItemStack fireSword = new ItemStack(Material.NETHERITE_SWORD);
@@ -75,7 +69,7 @@ public class FireSword implements Listener {
         Vector direction = playerLocation.getDirection().normalize(); // Normalize to unit vector
 
         // Set the player's velocity to shoot them forward 20 blocks
-        double distance = 30.0; // Distance to shoot forward
+        double distance = 15.0; // Distance to shoot forward
         Vector velocity = direction.multiply(distance); // Scale direction vector by distance
         player.setVelocity(velocity); // Set the player's velocity
 

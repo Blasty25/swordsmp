@@ -37,12 +37,6 @@ public class WaterSword implements Listener {
         return waterSword;
     }
 
-    public static WaterSword getInstance(CooldownManager cooldownManager) {
-        if (instance == null) {
-            instance = new WaterSword(cooldownManager);
-        }
-        return instance;
-    }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -58,7 +52,6 @@ public class WaterSword implements Listener {
 
     public void handleAbility(Player player) {
         if (!cooldownManager.isOnCooldown(player, "water_sword")) {
-            launchNearbyPlayers(player);
             if (isPlayerInWater(player)) {
                 player.addPotionEffect((new PotionEffect(PotionEffectType.RESISTANCE,30*20, 1,true,false)));
                 player.sendMessage("You are touching water! You now have Resistance 2 for 30 seconds!");
@@ -77,17 +70,7 @@ public class WaterSword implements Listener {
         return block.getType() == Material.WATER;
     }
 
-    private void launchNearbyPlayers(Player player) {
-        double radius = 5.0;
-        List<Entity> nearbyEntities = player.getNearbyEntities(radius, radius, radius);
-        for (Entity entity : nearbyEntities) {
-            if (entity instanceof Player) {
-                Player nearbyPlayer = (Player) entity;
-                nearbyPlayer.setVelocity(new Vector(0, 1, 0).multiply(25));
-                nearbyPlayer.sendMessage("You were launched by the Water Sword!");
-            }
-        }
-    }
+
 
     private boolean hasSpecificSword(Player player, int modelData) {
         ItemStack item = player.getInventory().getItemInMainHand();

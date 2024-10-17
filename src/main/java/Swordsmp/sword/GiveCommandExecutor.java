@@ -11,11 +11,17 @@ public class GiveCommandExecutor implements CommandExecutor {
     private final WaterSword waterSword;
     private final FireSword fireSword; // Add more sword types as
     private  final  EarthSword earthSword;
+    private final SpaceSword spaceSword;
+    private final AirSword airSword;
+    private final DragonSword dragonSword;
 
-    public GiveCommandExecutor(WaterSword waterSword, FireSword fireSword, EarthSword earthSword) {
+    public GiveCommandExecutor(WaterSword waterSword, FireSword fireSword, EarthSword earthSword, SpaceSword spaceSword, AirSword airSword, DragonSword dragonSword) {
         this.waterSword = waterSword;
         this.fireSword = fireSword; // Initialize other swords as needed
         this.earthSword = earthSword;
+        this.spaceSword = spaceSword;
+        this.airSword = airSword;
+        this.dragonSword = dragonSword;
     }
 
     @Override
@@ -40,8 +46,21 @@ public class GiveCommandExecutor implements CommandExecutor {
                         target.getInventory().addItem(earthSword.createEarthSword());
                         target.sendMessage("You have been given a Earth Sword");
                         break;
+
+                    case "4":
+                        target.getInventory().addItem(spaceSword.createSpaceSword());
+                        target.sendMessage("You have been given a Space Sword");
+                        break;
+                    case "5":
+                        target.getInventory().addItem((airSword.createAirSword()));
+                        target.sendMessage("You have been given a Air Sword");
+                        break;
+                    case "6":
+                        target.getInventory().addItem((dragonSword.createDragonSword()));
+                        target.sendMessage("You have been given a Dragon Sword");
+                        break;
                     default:
-                        sender.sendMessage("Invalid sword number. Available: 1 (Water), 2 (Fire), ...");
+                        sender.sendMessage("Invalid sword number. Available: 1 (Water), 2 (Fire), 3 (Earth), 4 (Space)");
                 }
                 return true;
             } else {
