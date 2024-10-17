@@ -10,31 +10,34 @@ import org.bukkit.inventory.ShapedRecipe;
 
 public final class CustomCrafting {
 
-    static Boolean isWaterSwordCrafted = false;
-    static Boolean isFireSwordCrafted = false;
-    static Boolean isEarthSwordCrafted = false;
+    public static Boolean isWaterSwordCrafted = false;
+    public static Boolean isFireSwordCrafted = false;
+    public static Boolean isEarthSwordCrafted = false;
 
 
 
     public static void register() {
-        Bukkit.getLogger().info("debug");
-        ShapedRecipe recipe1 = new ShapedRecipe(new NamespacedKey("Swordsmp", "water_sword"), WaterSword.getInstance(null).createWaterSword());
-        recipe1.shape(
-                "DOD",
-                "BPB",
-                "DOD");
-        recipe1.setIngredient('D', Material.CONDUIT);
-        recipe1.setIngredient('O', Material.TURTLE_EGG);
-        recipe1.setIngredient('B', Material.SPONGE);
-        recipe1.setIngredient('P', Material.DIAMOND_SWORD);
+        System.out.println("Find me");
+        if (isWaterSwordCrafted) {
+            System.out.println("starting if statment for sword 1");
+            ShapedRecipe recipe1 = new ShapedRecipe(new NamespacedKey("swordsmp", "water_sword"), WaterSword.getInstance(null).createWaterSword());
+            recipe1.shape(
+                    "DOD",
+                    "BPB",
+                    "DOD");
+            recipe1.setIngredient('D', Material.CONDUIT);
+            recipe1.setIngredient('O', Material.TURTLE_EGG);
+            recipe1.setIngredient('B', Material.SPONGE);
+            recipe1.setIngredient('P', Material.DIAMOND_SWORD);
 
-        // Register the recipe
-        Bukkit.addRecipe(recipe1);
-        Bukkit.getLogger().info("Water crafted");
+            // Register the recipe
+            Bukkit.addRecipe(recipe1);
+            System.out.println("Sword 1 crafted");
+        }
 
         // Check if Fire Sword is crafted
         if (isFireSwordCrafted) {
-            ShapedRecipe recipe2 = new ShapedRecipe(new NamespacedKey("Swordsmp", "fire_sword"), FireSword.getInstance(null).createFireSword());
+            ShapedRecipe recipe2 = new ShapedRecipe(new NamespacedKey("swordsmp", "fire_sword"), FireSword.getInstance(null).createFireSword());
             recipe2.shape(
                     "TYT",
                     "RVR",
@@ -51,7 +54,7 @@ public final class CustomCrafting {
 
         // Check if Earth Sword is crafted
         if (isEarthSwordCrafted) {
-            ShapedRecipe recipe3 = new ShapedRecipe(new NamespacedKey("Swordsmp", "earth_sword"), EarthSword.getInstance(null).createEarthSword());
+            ShapedRecipe recipe3 = new ShapedRecipe(new NamespacedKey("swordsmp", "earth_sword"), EarthSword.getInstance(null).createEarthSword());
             recipe3.shape(
                     "HJH",
                     "JLJ",
