@@ -24,17 +24,16 @@ public class Sword extends JavaPlugin {
         dragonSword = new DragonSword(cooldownManager);
 
 
-            getServer().getPluginManager().registerEvents(waterSword, this);
-            getServer().getPluginManager().registerEvents(fireSword, this);
-            getServer().getPluginManager().registerEvents(earthSword,this);
-            getServer().getPluginManager().registerEvents(spaceSword, this);
-            getServer().getPluginManager().registerEvents(airSword, this);
-            getServer().getPluginManager().registerEvents(dragonSword, this);
+        getServer().getPluginManager().registerEvents(waterSword, this);
+        getServer().getPluginManager().registerEvents(fireSword, this);
+        getServer().getPluginManager().registerEvents(earthSword, this);
+        getServer().getPluginManager().registerEvents(spaceSword, this);
+        getServer().getPluginManager().registerEvents(airSword, this);
+        getServer().getPluginManager().registerEvents(dragonSword, this);
 
 
-
-            // Register command executor
-            getCommand("give").setExecutor(new GiveCommandExecutor(waterSword, fireSword, earthSword, spaceSword, airSword, dragonSword));
+        // Register command executor
+        //  getCommand("give").setExecutor(new GiveCommandExecutor(waterSword, fireSword, earthSword, spaceSword, airSword, dragonSword));
     }
 
 

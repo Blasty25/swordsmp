@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;   //Having issues about resetting players health back to 20 points after death
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -47,9 +48,17 @@ public class AirSword implements Listener {
         }
     }
 
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+
+        if (player.getMaxHealth() == 30.0) player.resetMaxHealth();
+    }
+
+
     public void handleAbility(Player player) {
-        player.setMaxHealth(20); // Increase to 20 hearts
-        player.setHealth(Math.min(player.getHealth(), 20));
+        player.setMaxHealth(30); // Increase to 20 hearts
+        player.setHealth(Math.min(player.getHealth(), 30));
         if (!cooldownManager.isOnCooldown(player, "air_sword")) {
             launchNearbyPlayers(player);
             increasePlayerHearts(player);

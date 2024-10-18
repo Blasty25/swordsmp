@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -42,7 +43,6 @@ public class DragonSword implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
-
         if (item != null && item.getType() == Material.NETHERITE_SWORD && hasSpecificSword(player, 6)) {
             if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 handleAbility(player);
@@ -50,10 +50,17 @@ public class DragonSword implements Listener {
         }
     }
 
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event){
+        Player player = event.getEntity();
+        if(player.getMaxHealth() == 60.0) player.resetMaxHealth();
+    }
+
     public void handleAbility(Player player) {
         if (!cooldownManager.isOnCooldown(player, "dragon_sword")) {
-            //Main ability
-            increasePlayerHearts(player);
+           //Main ability
+            player.setMaxHealth(60);
+            player.setHealth(Math.min(player.getHealth(),60));
             Location playerLocation = player.getLocation();
             double radius = 10.0; // Adjust radius as needed
             EntityManipulator entityManipulator = new EntityManipulator();
@@ -66,6 +73,13 @@ public class DragonSword implements Listener {
         player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, Integer.MAX_VALUE, 2, true, false));
 
     }
+    private void increasePlayerHearts(Player player) {
+        // Air Sword ability: increase player's max health
+        player.setMaxHealth(60); // Increase to 20 hearts
+        player.setHealth(Math.min(player.getHealth(), 60)); // Ensure current health is not above max
+        player.sendMessage("Your health increased with the Dragon Sword!");
+    }
+
     public class EntityManipulator {
 
         // Method to manipulate nearby entities
@@ -92,12 +106,7 @@ public class DragonSword implements Listener {
             }
         }
     }
-    private void increasePlayerHearts(Player player) {
-        // Air Sword ability: increase player's max health
-        player.setMaxHealth(60); // Increase to 20 hearts
-        player.setHealth(Math.min(player.getHealth(), 60)); // Ensure current health is not above max
-        player.sendMessage("Your health increased with the Dragon Sword!");
-    }
+    
 
     private Boolean hasSpecificSword(Player player, int modelData){
         ItemStack item = player.getInventory().getItemInMainHand();
