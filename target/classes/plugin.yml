@@ -1,8 +1,0 @@
-name: Sword
-version: '1.0-SNAPSHOT'
-main: Swordsmp.sword.Sword
-api-version: '1.21'
-commands:
-  give:
-    description: Gives the specified item to a player
-    usage: /give <player> <sword_type>
