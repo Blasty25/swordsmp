@@ -6,9 +6,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;   //Having issues about resetting players health back to 20 points after death
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
@@ -36,17 +36,7 @@ public class AirSword implements Listener {
         return airSword;
     }
 
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        ItemStack item = player.getInventory().getItemInMainHand(); // Ensure current health is not above max
 
-        if (item != null && item.getType() == Material.NETHERITE_SWORD && hasSpecificSword(player, 5)) {
-            if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                handleAbility(player);
-            }
-        }
-    }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
@@ -62,7 +52,7 @@ public class AirSword implements Listener {
         if (!cooldownManager.isOnCooldown(player, "air_sword")) {
             launchNearbyPlayers(player);
             increasePlayerHearts(player);
-            cooldownManager.setCooldown(player, "Air_sword", 150);
+            cooldownManager.setCooldown(player, "air_sword", 50);
         } else {
             long remainingTime = cooldownManager.getCooldownTime(player, "air_sword");
             player.sendMessage("Air Sword is on cooldown for " + remainingTime + " more seconds!");
@@ -89,8 +79,7 @@ public class AirSword implements Listener {
         }
     }
 
-    private Boolean hasSpecificSword(Player player, int modelData){
-        ItemStack item = player.getInventory().getItemInMainHand();
+    public Boolean hasSpecificSword(ItemStack item, int modelData){
         return item != null  && item.hasItemMeta() && item.getItemMeta().hasCustomModelData() && item.getItemMeta().getCustomModelData() == modelData;
     }
 

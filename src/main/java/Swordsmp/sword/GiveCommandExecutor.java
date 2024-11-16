@@ -14,14 +14,16 @@ public class GiveCommandExecutor implements CommandExecutor {
     private final SpaceSword spaceSword;
     private final AirSword airSword;
     private final DragonSword dragonSword;
+    private final WardenSword wardenSword;
 
-    public GiveCommandExecutor(WaterSword waterSword, FireSword fireSword, EarthSword earthSword, SpaceSword spaceSword, AirSword airSword, DragonSword dragonSword) {
+    public GiveCommandExecutor(WaterSword waterSword, FireSword fireSword, EarthSword earthSword, SpaceSword spaceSword, AirSword airSword, DragonSword dragonSword, WardenSword wardenSword) {
         this.waterSword = waterSword;
         this.fireSword = fireSword; // Initialize other swords as needed
         this.earthSword = earthSword;
         this.spaceSword = spaceSword;
         this.airSword = airSword;
         this.dragonSword = dragonSword;
+        this.wardenSword = wardenSword;
     }
 
     @Override
@@ -58,6 +60,10 @@ public class GiveCommandExecutor implements CommandExecutor {
                     case "6":
                         target.getInventory().addItem((dragonSword.createDragonSword()));
                         target.sendMessage("You have been given a Dragon Sword");
+                        break;
+                    case "7":
+                        target.getInventory().addItem((wardenSword.createWardenSword()));
+                        target.sendMessage("You have been given a Warden Sword");
                         break;
                     default:
                         sender.sendMessage("Invalid sword number. Available: 1 (Water), 2 (Fire), 3 (Earth), 4 (Space)");

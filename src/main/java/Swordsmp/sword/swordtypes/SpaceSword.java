@@ -6,10 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,7 +17,6 @@ public class SpaceSword implements Listener {
     private final CooldownManager cooldownManager;
 
     public SpaceSword(CooldownManager cooldownManager) {
-
         this.cooldownManager = cooldownManager;
     }
 
@@ -35,17 +31,6 @@ public class SpaceSword implements Listener {
         return spaceSword;
     }
 
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        ItemStack item = player.getInventory().getItemInMainHand();
-
-        if (item != null && item.getType() == Material.NETHERITE_SWORD && hasSpecificSword(player, 4)) {
-            if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                handleAbility(player);
-            }
-        }
-    }
 
     public void handleAbility(Player player) {
         if (!cooldownManager.isOnCooldown(player, "space_sword")) {
@@ -62,18 +47,17 @@ public class SpaceSword implements Listener {
                     player.sendMessage("You are now back in Survival mode!");
                 }
             }, 15 * 20L); // 15 seconds delay (20 ticks = 1 second)
-            cooldownManager.setCooldown(player, "Space_sword", 150);
+            cooldownManager.setCooldown(player, "space_sword", 50);
         } else {
             long remainingTime = cooldownManager.getCooldownTime(player, "space_sword");
             player.sendMessage("Space Sword is on cooldown for " + remainingTime + " more seconds!");
         }
-        player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, Integer.MAX_VALUE, 0, true, false));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, Integer.MAX_VALUE, 0, true, false));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 0, true, false));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 0, true, false));
     }
 
 
-    private Boolean hasSpecificSword(Player player, int modelData){
-        ItemStack item = player.getInventory().getItemInMainHand();
-        return item != null  && item.hasItemMeta() && item.getItemMeta().hasCustomModelData() && item.getItemMeta().getCustomModelData() == modelData;
+    public Boolean hasSpecificSword(ItemStack item, int modelData){
+        return item != null && item.hasItemMeta() && item.getItemMeta().hasCustomModelData() && item.getItemMeta().getCustomModelData() == modelData;
     }
 }

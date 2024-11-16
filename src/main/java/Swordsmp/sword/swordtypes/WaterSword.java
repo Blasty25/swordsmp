@@ -3,22 +3,19 @@ package Swordsmp.sword.swordtypes;
 import Swordsmp.sword.CooldownManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 
-import java.util.List;
 
 public class WaterSword implements Listener {
-    private static WaterSword instance;
     private final CooldownManager cooldownManager;
 
     public WaterSword(CooldownManager cooldownManager) {
@@ -38,25 +35,15 @@ public class WaterSword implements Listener {
     }
 
 
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (item != null && item.getType() == Material.NETHERITE_SWORD && hasSpecificSword(player, 1)) {
-            if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                handleAbility(player);
-            }
-        }
-    }
 
     public void handleAbility(Player player) {
         if (!cooldownManager.isOnCooldown(player, "water_sword")) {
             if (isPlayerInWater(player)) {
-                player.addPotionEffect((new PotionEffect(PotionEffectType.RESISTANCE,30*20, 1,true,false)));
+                player.addPotionEffect((new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE ,30*20, 1,true,false)));
                 player.sendMessage("You are touching water! You now have Resistance 2 for 30 seconds!");
             }
-            cooldownManager.setCooldown(player, "water_sword", 150);
+            cooldownManager.setCooldown(player, "water_sword", 50);
         } else {
             long remainingTime = cooldownManager.getCooldownTime(player, "water_sword");
             player.sendMessage("Water Sword is on cooldown for " + remainingTime + " more seconds!");
@@ -72,8 +59,7 @@ public class WaterSword implements Listener {
 
 
 
-    private boolean hasSpecificSword(Player player, int modelData) {
-        ItemStack item = player.getInventory().getItemInMainHand();
+    public boolean hasSpecificSword(ItemStack item, int modelData) {
         return item != null && item.hasItemMeta() && item.getItemMeta().hasCustomModelData() && item.getItemMeta().getCustomModelData() == modelData;
     }
 }

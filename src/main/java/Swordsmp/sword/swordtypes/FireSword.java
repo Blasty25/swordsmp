@@ -1,6 +1,9 @@
 package Swordsmp.sword.swordtypes;
 
 import Swordsmp.sword.CooldownManager;
+import Swordsmp.sword.Sword;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -9,15 +12,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 public class FireSword implements Listener {
     private final CooldownManager cooldownManager;
-    private static FireSword instance;
 
     public FireSword(CooldownManager cooldownManager) {
         this.cooldownManager = cooldownManager;
@@ -34,29 +38,23 @@ public class FireSword implements Listener {
         return fireSword;
     }
 
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (item != null && item.getType() == Material.NETHERITE_SWORD && hasSpecificSword(player, 2)) {
-            if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                handleAbility(player);
-            }
-        }
-    }
 
     public void handleAbility(Player player) {
-        if (!cooldownManager.isOnCooldown(player, "fire_sword")) {
-            if (isPlayerTouchingLava(player)) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 15 * 20, 1));
-                player.sendMessage("You are touching Lava! You now have Regeneration for 15 seconds!");
-            } else {
-                player.sendMessage("You are not touching lava.");
+        Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(Sword.class), new Runnable() {
+            @Override
+            public void run() {
+                if (isPlayerTouchingLava(player)) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 15 * 20, 14));
+                    player.sendMessage("You are touching Lava! You now have Regeneration for 15 seconds!");
+                }
             }
+        });
+        if (!cooldownManager.isOnCooldown(player, "fire_sword")) {
+
             shootPlayerForward(player);
 
-            cooldownManager.setCooldown(player, "fire_sword", 150);
+            cooldownManager.setCooldown(player, "fire_sword", 50);
         } else {
             long remainingTime = cooldownManager.getCooldownTime(player, "fire_sword");
             player.sendMessage("Fire Sword is on cooldown for " + remainingTime + " more seconds!");
@@ -82,8 +80,7 @@ public class FireSword implements Listener {
         return block.getType() == Material.LAVA;
     }
 
-    private boolean hasSpecificSword(Player player, int modelData) {
-        ItemStack item = player.getInventory().getItemInMainHand();
+    public boolean hasSpecificSword(ItemStack item, int modelData) {
         return item != null && item.hasItemMeta() && item.getItemMeta().hasCustomModelData() && item.getItemMeta().getCustomModelData() == modelData;
     }
 }

@@ -1,0 +1,9 @@
+# Configuration file for Sword Plugin
+
+# Indicates whether each sword has been crafted
+fire_sword_crafted: false
+water_sword_crafted: false
+earth_sword_crafted: false
+space_sword_crafted: false
+air_sword_crafted: false
+dragon_sword_crafted: false
